@@ -1,0 +1,6 @@
+/* styles.css */
+.custom-stepper .p-stepper-separator {
+    height: 2px; /* 구분선의 두께를 설정 */
+    width: 30px; /* 구분선의 길이를 설정 */
+    background-color: #ccc; /* 구분선의 색상 (선택 사항) */
+}

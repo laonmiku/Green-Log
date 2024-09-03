@@ -1,0 +1,38 @@
+/* 댓글 박스 전체 스타일 */
+.rereply-box {
+    border: 1px solid #ced4da;
+    /* 테두리 색상 */
+    border-radius: 0.25rem;
+    /* 둥근 모서리 */
+    padding: 1rem;
+    /* 내부 여백 */
+    background-color: #ffffff;
+    /* 배경 색상 */
+    margin-bottom: 1rem;
+    /* 아래 여백 */
+    box-shadow: 0 0 0.125rem rgba(0, 0, 0, 0.1);
+    /* 그림자 효과 */
+}
+
+/* 댓글 작성자 및 내용 컨테이너 스타일 */
+.rereply-header {
+    margin-bottom: 1rem;
+    /* 아래 여백 */
+}
+
+/* 작성자 정보 스타일 */
+.rereply-header .user-info {
+    display: flex;
+    align-items: center;
+}
+
+/* 작성자 이미지 스타일 */
+.rereply-header .user-img {
+    border-radius: 50%;
+}
+
+/* 댓글 내용 스타일 */
+.rereply-content {
+    white-space: pre-wrap;
+    /* 줄 바꿈 및 공백 유지 */
+}

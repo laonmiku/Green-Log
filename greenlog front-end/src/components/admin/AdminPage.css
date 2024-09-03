@@ -1,0 +1,63 @@
+.small-card-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.small-card-col {
+    flex: 0 1 auto;
+    width: 300px; /* 카드의 고정 너비 설정 */
+    margin: 10px; /* 카드 간격 조절 */
+}
+
+.small-card {
+    width: 100%;
+    padding: 20px; /* 카드 내부 여백 조절 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
+    border-radius: 8px; /* 모서리 둥글게 설정 */
+    background-color: #fff; /* 배경색 설정 */
+    height: 200px;
+}
+
+.task-link h3 {
+    font-size: 1.2em; /* 제목 크기 조절 */
+}
+
+@media (max-width: 768px) {
+    .small-card-col {
+        width: 45%;
+    }
+}
+
+@media (max-width: 576px) {
+    .small-card-col {
+        width: 100%;
+    }
+}
+
+.user-profile .form-group {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  
+  .user-profile .form-group .form-input {
+    flex: 0 0 48%;
+  }
+  
+  .user-profile .form-group .form-input label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
+  .user-profile .form-group .input-half {
+    width: 100%;
+  }
+  
+  .user-profile .form-group .w-100 {
+    width: 100%;
+  }
+
+  .p-inputgroup label {
+    margin-right: 5rem; /* 조정 가능한 간격 */
+  }

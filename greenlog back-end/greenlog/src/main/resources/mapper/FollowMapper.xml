@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.FollowMapper">
+
+	<insert id="addFollow">
+		insert into follow (follow_to, follow_from) value(#{follow_to},#{follow_from})
+	</insert>
+	
+	<delete id="unFollow">
+		delete from follow where follow_to=#{follow_to} and follow_from=#{follow_from}
+	</delete>
+
+	<select id="followingList" resultType="hashmap">
+		select f.*,u.user_nickname,u.user_uid,u.user_img 
+		from follow f,user u 
+		 <where>
+	        <if test="key == 'id'">
+	          (follow_to=user_uid and follow_from = #{uid}) and (user_nickname like concat('%', #{word}, '%') or user_uid like concat('%', #{word}, '%'))
+	        </if>
+    	</where>
+		order by follow_date desc
+		limit #{start},#{size}
+	</select>
+	
+	<select id="followingCount" resultType="int">
+		select count(*) 
+		from follow f,user u
+		 <where>
+	        <if test="key == 'id'">
+	          (follow_to=user_uid and follow_from = #{uid}) and (user_nickname like concat('%', #{word}, '%') or user_uid like concat('%', #{word}, '%'))
+	        </if>
+    	</where>
+    	order by follow_date desc
+		limit #{start},#{size}
+	</select>
+	
+	
+	<select id="followerList" resultType="hashmap">
+		select f.*,u.user_nickname,u.user_uid,u.user_img
+		from follow f,user u
+		<where>
+			<if test="key == 'id'">
+				(follow_from=user_uid and follow_to = #{uid}) and (user_nickname like concat('%', #{word}, '%') or user_uid like concat('%', #{word}, '%') )
+			</if>
+		</where>
+		order by follow_date desc
+		limit #{start},#{size}
+	</select>
+	
+	<select id="followerCount" resultType="int">
+		select count(*) 
+		from follow f,user u
+		<where>
+			<if test="key == 'id'">
+				(follow_from=user_uid and follow_to = #{uid}) and (user_nickname like concat('%', #{word}, '%') or user_uid like concat('%', #{word}, '%') )
+			</if>
+		</where>
+    	order by follow_date desc
+		limit #{start},#{size}
+	</select>
+	
+	<select id="chkfollow" resultType="hashmap">
+		select * from follow where follow_from =#{uid1} and follow_to=#{uid2}
+	</select>
+	
+</mapper>

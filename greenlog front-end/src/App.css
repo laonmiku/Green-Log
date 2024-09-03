@@ -1,0 +1,179 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.pagination {
+  display: flex; justify-content: center;
+  margin-top: 15px;
+ }
+ ul {
+  list-style: none; padding: 0;
+ }
+ ul.pagination li {
+  display: inline-block;
+  width: 30px; height: 30px;
+  border: 1px solid #e2e2e2; 
+  display: flex;
+  justify-content: center; align-items: center;
+  font-size: 1rem;
+  border-radius: 50%;
+  margin-left: 5px;
+ }
+ ul.pagination li:first-child{
+  border-left: 1px solid #e2e2e2; border-radius: 50%;
+ }
+ ul.pagination li:last-child{
+  border-radius: 50%;
+ }
+ ul.pagination li a {
+  text-decoration: none; color: #337ab7; font-size: 0.7rem;
+ }
+ ul.pagination li.active a {
+  color: white;
+ }
+ ul.pagination li.active {
+  background-color: #337ab7;
+ }
+ ul.pagination li a:hover, ul.pagination li a.active {
+  color: blue;
+ }
+ .page-selection {
+  width: 48px; height: 30px; color: #337ab7;
+ }
+
+ /*피망몰 */
+ 
+ .insert_link{
+  color: black;
+ }
+ .insert_link:hover{
+  color: rgb(30, 157, 45);
+ }
+.mall_stateBox_input{
+ accent-color: rgb(0, 0, 0);
+ width: 1.5rem;
+ height: 1.5rem;
+ inline-size: auto;
+ margin: auto;
+}
+ /*피망몰 리드페이지 */
+ .mall_read_flexbox{
+  display: flex;
+  flex-direction: row;
+  background-color: #ffffff;
+ }
+ .mall_read_item{
+  text-align: center;
+ }
+ .sellerList .slick-dots {
+  display: none !important;
+}
+.allImage {
+  display: flex; /* 이미지들을 가로로 나열하기 위해 */
+  flex-direction: column; /* 세로 방향으로 나열 */
+  gap: 10px; /* 이미지들 사이의 간격 설정 */
+  align-items: center; /* 아이템들을 수직 방향으로 가운데 정렬 */
+}
+.allImage img {
+  width: 400px; 
+  height: auto; 
+  margin-bottom: 10px; 
+}
+.mall_read_parent{
+  display: grid;
+  position: relative;
+}
+ .mall_card_child{
+  width: 100%;
+  height: 100%;
+}
+/*피망 인기리스트 */
+.mall-table-stand { /*배경로우*/
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 300px; 
+  margin-bottom: 20px; /* 단상과 상품 리스트 사이의 간격 조절 */
+}
+.mall-stand-top {
+  width: 10rem; 
+  height: 50%;
+  background-color: #000000; 
+  border-radius:1rem 1rem 0rem 0rem;
+}
+.mall-stand-leg {
+  width:  10rem; 
+  height: 40%; 
+  background-color: #000000b9; 
+  border-radius:1rem 1rem 0rem 0rem;
+}
+.mall-stand-row-leg {
+  width:  10rem; 
+  height: 30%;
+  background-color:  #00000083; 
+  border-radius:1rem 1rem 0rem 0rem;
+}
+.mall_pop_card2{
+  position: absolute;
+  top: -2rem;
+  left: 7%;
+}
+.mall_pop_card1{
+  position: absolute;
+  top: -4rem;
+  left: 50%; /* 가운데 정렬을 위한 왼쪽 위치 설정 */
+  transform: translateX(-50%); /* 가운데 정렬을 위해 왼쪽으로 이동 */
+}
+.mall_pop_card3{
+  position: absolute;
+  top:0rem;
+  right: 7%;
+}
+
+/* 드롭다운의 caret 아이콘을 숨깁니다 */
+.navbar-nav .dropdown-toggle::after {
+  display: none;
+}
+

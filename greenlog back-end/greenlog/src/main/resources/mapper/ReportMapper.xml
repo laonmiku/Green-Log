@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.ReportMapper">
+	<insert id="insert" >
+		insert into report (report_from, report_to, report_contents, report_origin, report_root) value (#{report_from},#{report_to},#{report_contents},#{report_origin},#{report_root});
+	</insert>
+
+	<select id="list" resultType="hashmap">
+		select * from report
+		where report_state=0
+		order by report_regDate desc
+		limit #{start}, #{size}
+	</select>
+
+	<select id="alist" resultType="hashmap">
+		select * from report
+		<where>
+			<if test="key == 'id'">
+				report_state=1 and (report_from like concat('%', #{word}, '%') or report_to like concat('%', #{word}, '%'))
+			</if>
+		</where>
+		order by report_regDate desc
+		limit #{start}, #{size}
+	</select>
+    
+    <select id="count" resultType="int">
+   		select count(*) from report where report_state=0;
+    </select>
+    
+    <select id="acount" resultType="int">
+    	select count(*) from report where report_state=1;
+    </select>
+    
+    <update id="update">
+    	update report set report_state=1 where report_key=#{report_key}
+    </update>
+</mapper>

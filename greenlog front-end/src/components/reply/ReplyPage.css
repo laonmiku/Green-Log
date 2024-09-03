@@ -1,0 +1,136 @@
+/* Pagination 스타일 */
+/* CSS for Pagination */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    /* Center the pagination horizontally */
+    margin-top: 1rem;
+    /* Optional: adjust top margin for spacing */
+}
+
+.pagination-container .MuiPagination-root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ReplyPage.css */
+
+/* ReplyListPage.css */
+
+/* Style for the user image */
+.reply-card-header img {
+    width: 60px;
+    /* Image width */
+    height: 60px;
+    /* Image height */
+    border-radius: 50%;
+    /* Make image round */
+    margin-right: 1rem;
+    /* Space between image and text */
+}
+
+/* Container for user info */
+.reply-card-header .user-info {
+    flex: 1;
+    /* Allows the user info to take the available space */
+}
+
+/* Style for user info links (nickname and ID) */
+.reply-card-header .user-info a {
+    font-weight: bold;
+    /* Bold text */
+    text-decoration: none;
+    /* Remove underline */
+    color: #000000;
+    /* Black text color */
+}
+
+/* Hover effect for user info links */
+.reply-card-header .user-info a:hover {
+    text-decoration: underline;
+    /* Underline on hover */
+}
+
+/* ReplyPage.css */
+
+
+/* Remove border from the reply-card-header if any exists */
+.reply-card-header {
+    border: 1px solid #ccc;
+    /* This is for the card border */
+    border-radius: 4px;
+    /* Card border radius */
+    padding: 1rem;
+    /* Padding inside the card */
+    background-color: #fff;
+    /* Background color of the card */
+    margin-bottom: 1rem;
+    /* Space below the card */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Shadow effect for the card */
+    display: flex;
+    flex-direction: column;
+    /* Align elements vertically inside the card */
+    position: relative;
+    /* Required for absolute positioning of dropdown menu */
+}
+
+
+/* Remove any borders or shadows that might affect the area below the image */
+.reply-card-header .user-info img {
+    border: none;
+    /* Ensure no border around the image */
+    box-shadow: none;
+    /* Ensure no shadow effect */
+}
+
+.reply-content textarea {
+    width: 100%;
+    /* Full width of the container */
+    min-height: 100px;
+    /* Minimum height for the textarea */
+    border: 1px solid #ddd;
+    /* Border for the textarea */
+    border-radius: 4px;
+    /* Rounded corners for the textarea */
+    padding: 0.5rem;
+    /* Padding inside the textarea */
+    box-sizing: border-box;
+    /* Include padding and border in the width */
+}
+
+.reply-reaction {
+    margin-bottom: 1rem;
+    /* Space below the reply reactions */
+}
+
+/* ReplyPage.css */
+
+.reply-card-header .dropdown-menu {
+    right: 0;
+    left: auto;
+}
+
+.reply-card-header .dropdown-toggle {
+    position: relative;
+}
+
+.reply-card-header .dropdown-menu .dropdown-item {
+    font-weight: normal;
+    color: #000;
+    text-decoration: none;
+}
+
+.reply-card-header .dropdown-menu .dropdown-item:hover {
+    background-color: #f8f9fa;
+    /* Optional: Change background color on hover */
+    text-decoration: none;
+    /* Ensure no underline on hover */
+}
+
+
+.dropdown-container {
+    margin-left: auto;
+    /* 드롭다운을 오른쪽 끝으로 이동시킴 */
+}

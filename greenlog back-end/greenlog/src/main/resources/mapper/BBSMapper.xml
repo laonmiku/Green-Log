@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mapper.BBSMapper">
+    <insert id="insert">
+        INSERT INTO BBS (bbs_writer, bbs_title, bbs_contents, bbs_type,bbs_photo)
+        VALUES (#{bbs_writer}, #{bbs_title}, #{bbs_contents}, #{bbs_type},#{bbs_photo})
+    </insert>
+   <update id="update">
+		update BBS
+		set bbs_title= #{bbs_title}, bbs_contents=#{bbs_contents}, bbs_type= #{bbs_type}
+		where bbs_key=#{bbs_key}
+	</update>
+   <delete id="delete">
+		delete from BBS where bbs_key=#{bbs_key}
+	</delete>
+    <select id="read" resultType="hashmap">
+        select b.*,u.user_nickname,u.user_img from BBS b join user u on bbs_writer=user_uid where bbs_key = #{bbs_key}
+    </select>
+	<select id="list" resultType="hashmap">
+		select *, date_format(bbs_regDate, '%Y.%m.%d') as fmtdate
+		from BBS
+	<where>
+		<if test="key2 == 'all'">
+			<if test="key == 'writer'">bbs_writer LIKE #{word}</if>
+			<if test="key == 'title'">bbs_title LIKE #{word}</if>
+			<if test="key == 'contents'">bbs_contents LIKE #{word}</if>
+		</if>
+		<if test="key2 == 'free'">
+			<if test="key == 'writer'">bbs_writer LIKE #{word} AND bbs_type = 0</if>
+			<if test="key == 'title'">bbs_title LIKE #{word} AND bbs_type = 0</if>
+			<if test="key == 'contents'">bbs_contents LIKE #{word} AND bbs_type = 0</if>
+		</if>
+		<if test="key2 == 'tip'">
+			<if test="key == 'writer'">bbs_writer LIKE #{word} AND bbs_type = 1</if>
+			<if test="key == 'title'">bbs_title LIKE #{word} AND bbs_type = 1</if>
+			<if test="key == 'contents'">bbs_contents LIKE #{word} AND bbs_type = 1</if>
+		</if>
+	</where>
+		order by bbs_regDate desc
+		limit #{start}, #{size} ;
+	</select>
+ 	<select id="total" resultType="int">
+	select count(*)
+	from BBS
+	<where>
+		<if test="key2 == 'all'">
+			<if test="key == 'writer'">bbs_writer LIKE #{word}</if>
+			<if test="key == 'title'">bbs_title LIKE #{word}</if>
+			<if test="key == 'contents'">bbs_contents LIKE #{word}</if>
+		</if>
+		<if test="key2 == 'free'">
+			<if test="key == 'writer'">bbs_writer LIKE #{word} AND bbs_type = 0</if>
+			<if test="key == 'title'">bbs_title LIKE #{word} AND bbs_type = 0</if>
+			<if test="key == 'contents'">bbs_contents LIKE #{word} AND bbs_type = 0</if>
+		</if>
+		<if test="key2 == 'tip'">
+			<if test="key == 'writer'">bbs_writer LIKE #{word} AND bbs_type = 1</if>
+			<if test="key == 'title'">bbs_title LIKE #{word} AND bbs_type = 1</if>
+			<if test="key == 'contents'">bbs_contents LIKE #{word} AND bbs_type = 1</if>
+		</if>
+	</where>
+	</select>
+ 	<update id="updateViewcnt">
+		update BBS
+		set bbs_vcnt=bbs_vcnt+1
+		where bbs_key=#{bbs_key}
+	</update>
+	  <select id="topList" resultType="hashmap">
+        select *, date_format(bbs_regDate, '%Y.%m.%d') as fmtdate 
+        from BBS 
+        where bbs_regDate BETWEEN DATE_FORMAT(NOW(), '%Y-%m-01 00:00:00') AND LAST_DAY(NOW()) + INTERVAL 1 DAY - INTERVAL 1 SECOND
+        order by bbs_vcnt desc limit 3
+    </select>
+    
+     <select id="noticeList" resultType="hashmap">
+        select *, date_format(bbs_regDate, '%Y.%m.%d') as fmtdate from BBS where bbs_type=2 order by bbs_vcnt desc
+    </select>
+    
+   	<insert id="insertPhoto">
+		insert into BBSPhoto (bbsPhoto_bbs_key, bbsPhoto_photo, bbsPhoto_sequence) 
+		values (#{bbsPhoto_bbs_key},#{bbsPhoto_photo}, #{bbsPhoto_sequence})
+	</insert>
+
+	<update id="updatePhoto">
+		update BBSPhoto set bbsPhoto_sequence=#{bbsPhoto_sequence} where bbsPhoto_key=#{bbsPhoto_key}
+	</update>
+
+	<delete id="deleteAttach">
+		delete from BBSPhoto where bbsPhoto_key= #{bbsPhoto_key}
+	</delete>
+	
+	<select id="getLastInsertId" resultType="int">
+		select distinct(last_insert_id()) as last from BBS
+	</select>
+	
+	<select id="listMallPhoto" resultType="hashmap">
+	 	select * from BBSPhoto where bbsPhoto_bbs_key= #{bbsPhoto_key} order by bbsPhoto_sequence;
+	 </select>
+	 
+	 <update id="insertMainPhoto">
+	 	update BBS set bbs_photo=#{bbs_photo} where bbs_key=#{bbs_key}
+	 </update>
+	 
+	 <select id="getMainPhoto" resultType="String">
+		select bbs_photo from BBS where bbs_key=#{bbs_key};
+	 </select>
+
+ 	<update id="updateMainPhoto">
+	 	update BBS set bbs_photo=#{bbsPhoto_photo} where bbs_key=#{bbsPhoto_bbs_key}
+	 </update>
+</mapper>

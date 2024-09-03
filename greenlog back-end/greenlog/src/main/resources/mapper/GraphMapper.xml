@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.GraphMapper">
+	<select id="diaryCount" resultType="hashmap">
+		SELECT COUNT(diary_key) AS diary_count, diary_state, DATE_FORMAT(diary_regDate, '%Y-%m') AS diary_regMonth
+		FROM diary WHERE diary_regDate BETWEEN DATE_ADD(NOW(), INTERVAL -4 MONTH) AND NOW()
+		GROUP BY diary_state, DATE_FORMAT(diary_regDate, '%Y-%m') ORDER BY diary_regMonth ASC;
+	</select>
+	
+	<select id="rank" resultType="hashmap">
+	<![CDATA[
+    WITH ranked_data AS (
+      SELECT 
+        user.user_nickname,
+        user.user_img,
+        user.user_auth,
+        seed.seed_uid,
+        seed.seed_number,
+        seed.seed_point,
+        rank() OVER (ORDER BY seed.seed_point DESC) AS ranked
+      FROM user
+      LEFT JOIN seed ON user.user_uid = seed.seed_uid
+      WHERE (user.user_auth = '일반회원' OR user.user_auth = '우수회원')
+    )
+    SELECT *
+    FROM ranked_data
+    WHERE ranked <= 5
+    ORDER BY ranked;
+    ]]>
+	
+	</select>
+	
+	<select id="mallChart" resultType="hashmap">
+				SELECT 
+		    dates.date,
+		    IFNULL(mall_counts.mall_count, 0) as mall_key_count,
+		    IFNULL(auction_counts.auction_count, 0) as auction_key_count,
+		    IFNULL(review_counts.review_count, 0) as review_key_count
+		FROM 
+		    (SELECT CURDATE() as date
+		     UNION ALL SELECT CURDATE() - INTERVAL 1 DAY
+		     UNION ALL SELECT CURDATE() - INTERVAL 2 DAY
+		     UNION ALL SELECT CURDATE() - INTERVAL 3 DAY
+		     UNION ALL SELECT CURDATE() - INTERVAL 4 DAY
+		     UNION ALL SELECT CURDATE() - INTERVAL 5 DAY
+		     UNION ALL SELECT CURDATE() - INTERVAL 6 DAY) dates
+		LEFT JOIN 
+		    (SELECT DATE(mall_regDate) as date, COUNT(*) as mall_count
+		     FROM mall
+		     WHERE mall_regDate BETWEEN DATE_ADD(CURDATE(), INTERVAL -6 DAY) AND CURDATE()
+		     GROUP BY DATE(mall_regDate)) mall_counts
+		ON dates.date = mall_counts.date
+		LEFT JOIN 
+		    (SELECT DATE(auction_regDate) as date, COUNT(*) as auction_count
+		     FROM auction
+		     WHERE auction_regDate BETWEEN DATE_ADD(CURDATE(), INTERVAL -6 DAY) AND CURDATE()
+		     GROUP BY DATE(auction_regDate)) auction_counts
+		ON dates.date = auction_counts.date
+		LEFT JOIN 
+		    (SELECT DATE(review_regDate) as date, COUNT(*) as review_count
+		     FROM review
+		     WHERE review_regDate BETWEEN DATE_ADD(CURDATE(), INTERVAL -6 DAY) AND CURDATE()
+		     GROUP BY DATE(review_regDate)) review_counts
+		ON dates.date = review_counts.date
+		ORDER BY dates.date;
+	</select>
+
+</mapper>

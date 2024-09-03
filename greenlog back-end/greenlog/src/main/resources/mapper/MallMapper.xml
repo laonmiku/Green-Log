@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.MallMapper">
+	
+	<select id="buyList" resultType="hashmap">
+		select r.*,m.*,a.auction_buyer
+		from mall m
+			join review r on review_mall_key= mall_key
+			join auction a on auction_mall_key= mall_key
+		where review_writer=#{review_writer} and auction_buyer=#{review_writer}	and now() > mall_endDate
+		limit #{vo.start},#{vo.size}
+	</select>
+	
+	<select id="buyListTotal" resultType="int">
+		select count(mall_key) 
+		from mall m
+			join review r on review_mall_key= mall_key
+			join auction a on auction_mall_key= mall_key
+		where review_writer=#{review_writer} and auction_buyer=#{review_writer}	and now() > mall_endDate
+	</select>
+	
+	<select id="reviewList" resultType="hashmap">
+		select r.*,m.*,a.auction_buyer
+		from mall m
+			join review r on review_mall_key= mall_key
+			join auction a on auction_mall_key= mall_key
+		where review_writer=#{review_writer} and auction_buyer!=#{review_writer} 
+		limit #{vo.start},#{vo.size}
+	</select>
+	
+	<select id="reviewListTotal" resultType="int">
+		select count(mall_key) 
+		from mall m
+			join review r on review_mall_key= mall_key
+			join auction a on auction_mall_key= mall_key
+		where review_writer=#{review_writer} and auction_buyer!=#{review_writer} 
+	</select>
+	
+	<select id="reviewCount" resultType="hashmap">
+		select m.*, count(review_key) as count
+		from mall m left join review r on m.mall_key= r.review_mall_key
+		where mall_endDate > now()
+		group by mall_key
+		order by count desc
+	</select>
+	
+	<select id="reviewCount2" resultType="hashmap">
+		select m.*, count(review_key) as count
+		from mall m left join review r on m.mall_key= r.review_mall_key
+		where mall_key=#{mall_key}
+		group by mall_key
+	</select>
+	
+	<select id="list" resultType="hashmap">
+		select *
+		from mall
+		 <where>
+	        <if test="key == 'mall_seller'">
+	           mall_seller like concat('%', #{word}, '%') 
+	        </if>
+	        <if test="key == 'mall_title'">
+	            mall_title like concat('%', #{word}, '%') 
+	        </if>
+	        <if test="key == 'mall_info'">
+	           mall_info like concat('%', #{word}, '%') 
+	        </if>
+	          <if test="pstateWord != null and pstateWord != ''">
+                AND mall_pstate in <foreach collection="pstateWord.split(',')" item="item" separator="," open="(" close=")">
+            #{item, jdbcType=INTEGER}
+        </foreach>
+            </if>
+             <if test="tstateWord != null and tstateWord != ''">
+                AND mall_tstate in <foreach collection="tstateWord.split(',')" item="item" separator="," open="(" close=")">
+            #{item, jdbcType=INTEGER}
+        </foreach>
+            </if>
+    	</where>
+    	<if test="itisEnd == 'false'">
+                AND mall_endDate > now() 
+        </if>
+        <if test="itisEnd == 'true'">
+                AND now() > mall_endDate 
+        </if>
+        
+    	<if test="orderBy == 'desc'">
+        	order by mall_regDate desc
+	    </if>
+	    <if test="orderBy == 'asc'">
+	        order by mall_regDate asc
+	    </if>
+		limit #{start}, #{size}
+	</select>
+	
+	<select id="sellerList" resultType="hashmap">
+		select * 
+		from mall
+        where mall_seller = #{mall_seller} and mall_endDate > now() 
+        order by mall_regDate desc
+		limit #{vo.start}, #{vo.size}
+	</select>
+	
+	<select id="sellerListTotal" resultType="int">
+		select count(*) 
+		from mall
+        where mall_seller = #{mall_seller} and mall_endDate > now() 
+	</select>
+	
+	<select id="read" resultType="hashmap">
+		select m.* ,user_nickname, user_address1, user_address2 , user_uname 
+		from mall m ,user u
+		where mall_key=#{mall_key} and mall_seller = user_uid
+	</select>
+	
+	<insert id="insertInfo">
+      insert into mall(mall_seller, mall_title, mall_info, mall_price, mall_photo, mall_tstate, mall_pstate, mall_endDate)
+      values(#{mall_seller}, #{mall_title}, #{mall_info}, #{mall_price}, #{mall_photo}, #{mall_tstate}, #{mall_pstate}, #{mall_endDate})
+   </insert>
+  
+	<insert id="insertPhoto">
+		insert into mallPhoto (mallPhoto_mall_key, mallPhoto_photo, mallPhoto_sequence) 
+		values (#{mallPhoto_mall_key},#{mallPhoto_photo}, #{mallPhoto_sequence})
+	</insert>
+
+	<update id="updatePhoto">
+		update mallPhoto set mallPhoto_sequence=#{mallPhoto_sequence} where mallPhoto_key=#{mallPhoto_key}
+	</update>
+	
+	<select id="total" resultType="int">
+		select count(*)
+		from mall
+		 <where>
+	        <if test="key == 'mall_seller'">
+	           mall_seller like concat('%', #{word}, '%') 
+	        </if>
+	        <if test="key == 'mall_title'">
+	            mall_title like concat('%', #{word}, '%') 
+	        </if>
+	        <if test="key == 'mall_info'">
+	           mall_info like concat('%', #{word}, '%') 
+	        </if>
+	          <if test="pstateWord != null and pstateWord != ''">
+                AND mall_pstate in <foreach collection="pstateWord.split(',')" item="item" separator="," open="(" close=")">
+            #{item, jdbcType=INTEGER}
+        </foreach>
+            </if>
+             <if test="tstateWord != null and tstateWord != ''">
+                AND mall_tstate in <foreach collection="tstateWord.split(',')" item="item" separator="," open="(" close=")">
+            #{item, jdbcType=INTEGER}
+        </foreach>
+            </if>
+    	</where>
+    	<if test="itisEnd == 'false'">
+                AND mall_endDate > now() 
+        </if>
+        <if test="itisEnd == 'true'">
+                AND now() > mall_endDate 
+        </if>
+       
+	</select>
+	
+	<update id="update">
+		update mall
+		set mall_title=#{mall_title},mall_info=#{mall_info},mall_tstate=#{mall_tstate},mall_pstate=#{mall_pstate},mall_price=#{mall_price},mall_endDate=#{mall_endDate},mall_uDate=now()
+		where mall_key=#{mall_key}
+	</update>
+	
+	 <update id="updateEndDate">
+		update mall
+		set mall_endDate=now()
+		where mall_key=#{mall_key}
+	</update>
+	
+	<delete id="delete">
+		delete from mall
+		where mall_key=#{mall_key}
+	</delete>
+	
+	<delete id="deleteAttach">
+		delete from mallPhoto where mallPhoto_key= #{mallPhoto_key}
+	</delete>
+	
+	<select id="getLastInsertId" resultType="int">
+		select distinct(last_insert_id()) as last from mall
+	</select>
+	
+	<select id="listMallPhoto" resultType="hashmap">
+	 	select * from mallPhoto where mallPhoto_mall_key= #{mallPhoto_key} order by mallphoto_sequence;
+	 </select>
+	 
+	 <update id="insertMainPhoto">
+	 	update mall set mall_photo=#{mall_photo} where mall_key=#{mall_key}
+	 </update>
+	 
+	 <select id="getMainPhoto" resultType="String">
+		select mall_photo from mall where mall_key=#{mall_key};
+	 </select>
+
+ 	<update id="updateMainPhoto">
+	 	update mall set mall_photo=#{mallPhoto_photo} where mall_key=#{mallPhoto_mall_key}
+	 </update>
+	 
+</mapper>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.TradeMapper">
+	<insert id="insert">
+		insert into trade (trade_from, trade_to,trade_amount,trade_state, trade_info) 
+		value( #{trade_from} ,#{trade_to}, #{amount} ,#{trade_state}, #{trade_info} )
+	</insert>
+	
+	<select id="userList" resultType="Hashmap">
+	    select t.*, s_to.seed_point as to_seed_point, s_from.seed_point as from_seed_point,
+	           date_format(t.trade_date, '%Y.%m.%d %T') as fmtdate,
+	           u_from.user_nickname as from_user_nickname, u_from.user_uid as from_user_uid,
+	           u_to.user_nickname as to_user_nickname, u_to.user_uid as to_user_uid
+	    from trade t
+	    join seed s_to on t.trade_to = s_to.seed_number
+	    join seed s_from on t.trade_from = s_from.seed_number
+	    join user u_from on s_from.seed_uid = u_from.user_uid
+	    join user u_to on s_to.seed_uid = u_to.user_uid
+	    <where>
+	    t.trade_status= 0 and
+	        <if test="key == 'id'">
+	            ((t.trade_to = #{seed_number}) and u_from.user_nickname like concat('%', #{word}, '%'))
+	            or ((t.trade_to = #{seed_number}) and u_from.user_uid like concat('%', #{word}, '%'))
+	        </if>
+	        <if test="key == 'type'">
+	            (t.trade_to = #{seed_number}) and t.trade_state = #{word}
+	        </if>
+	        <if test="key == null">
+	            t.trade_to = #{seed_number}
+	        </if>
+	        <if test="key == 'trade'">
+			(#{date2}>t.trade_date) and (t.trade_date>#{date1})
+		</if>
+	    </where>
+	    order by t.trade_date desc
+	    limit #{start}, #{size}
+	</select>
+	
+	
+	<select id="adminList" resultType="Hashmap">
+		 select t.*, s_to.seed_point as to_seed_point, s_from.seed_point as from_seed_point,
+	           date_format(t.trade_date, '%Y.%m.%d %T') as fmtdate,
+	           u_from.user_nickname as from_user_nickname, u_from.user_uid as from_user_uid,
+	           u_to.user_nickname as to_user_nickname, u_to.user_uid as to_user_uid
+	    from trade t
+	    join seed s_to on t.trade_to = s_to.seed_number
+	    join seed s_from on t.trade_from = s_from.seed_number
+	    join user u_from on s_from.seed_uid = u_from.user_uid
+	    join user u_to on s_to.seed_uid = u_to.user_uid
+	   <where>
+	        <if test="key == 'from'">
+	             (t.trade_state = 1 and (u_from.user_nickname like concat('%', #{word}, '%')))
+	            or  (t.trade_state = 1 and (u_from.user_uid like concat('%', #{word}, '%')))
+	        </if>
+	        <if test="key == 'to'">
+	            (t.trade_state = 1 and (u_to.user_nickname like concat('%', #{word}, '%')))
+	            or  (t.trade_state = 1 and (u_to.user_uid like concat('%', #{word}, '%')))
+	        </if>
+	        <if test="key == 'trade'">
+			(#{date2}>t.trade_date) and (t.trade_date>#{date1})
+		</if>
+		<if test="key == 'status'">
+			t.trade_status=1
+		</if>
+	    </where>
+	    order by t.trade_date desc
+	    limit #{start}, #{size}
+	</select>
+	
+	<select id="adminListCount" resultType="int">
+		select count(*) from trade t
+		join seed s_to on t.trade_to = s_to.seed_number
+	    join seed s_from on t.trade_from = s_from.seed_number
+	    join user u_from on s_from.seed_uid = u_from.user_uid
+	    join user u_to on s_to.seed_uid = u_to.user_uid
+	    <where>
+	        <if test="key == 'from'">
+	             (t.trade_state = 1 and (u_from.user_nickname like concat('%', #{word}, '%')))
+	            or  (t.trade_state = 1 and (u_from.user_uid like concat('%', #{word}, '%')))
+	        </if>
+	        <if test="key == 'to'">
+	            (t.trade_state = 1 and (u_to.user_nickname like concat('%', #{word}, '%')))
+	            or  (t.trade_state = 1 and (u_to.user_uid like concat('%', #{word}, '%')))
+	        </if>
+	        <if test="key == 'trade'">
+			(#{date2}>t.trade_date) and (t.trade_date>#{date1})
+		</if>
+		<if test="key == 'status'">
+			t.trade_status=1
+		</if>
+	    </where>
+	</select>
+
+	<select id="userListCount" resultType="int">
+		select count(*) from trade t
+		join seed s_to on t.trade_to = s_to.seed_number
+    	join seed s_from on t.trade_from = s_from.seed_number
+    	join user u_from on s_from.seed_uid = u_from.user_uid
+    	join user u_to on s_to.seed_uid = u_to.user_uid
+		 <where>
+		 t.trade_status= 0 and
+        <if test="key == 'id'">
+            ((t.trade_to = #{seed_number}) and u_from.user_nickname like concat('%', #{word}, '%'))
+            or ((t.trade_to = #{seed_number}) and u_from.user_uid like concat('%', #{word}, '%'))
+        </if>
+        <if test="key == 'type'">
+            (t.trade_to = #{seed_number}) and t.trade_state = #{word}
+        </if>
+        <if test="key == null">
+            t.trade_to = #{seed_number}
+        </if>
+         <if test="key == 'trade'">
+			(#{date2}>t.trade_date) and (t.trade_date>#{date1})
+		</if>
+   		</where>
+	</select>
+	
+	<update id="statusUpdate1">
+		update trade set trade_status=1 where trade_key=#{trade_key}
+	</update>
+	
+	<update id="statusUpdate0">
+		update trade set trade_status=0 where trade_key=#{trade_key}
+	</update>
+
+</mapper>

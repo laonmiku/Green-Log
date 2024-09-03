@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.EventMapper">
+	 <insert id="insert">
+        INSERT INTO event (event_writer, event_title, event_contents, event_type)
+        VALUES (#{event_writer}, #{event_title}, #{event_contents}, #{event_type})
+    </insert>
+     <update id="update">
+		update event
+		set event_title= #{event_title}, event_contents=#{event_contents}, event_type= #{event_type}
+		where event_key=#{event_key}
+	</update>
+	 <delete id="delete">
+		delete from event where event_key=#{event_key}
+	</delete>
+	 <select id="read" resultType="com.example.domain.EventVO">
+        SELECT * FROM event WHERE event_key = #{event_key}
+    </select>
+		<select id="list" resultType="hashmap">
+ 		select * 
+		from event
+		<if test="key=='event_writer'">where event_writer like #{word}</if>
+		<if test="key=='event_title'">where event_title like #{word}</if>
+		<if test="key=='event_contents'">where event_contents like #{word}</if>
+		order by event_key desc
+		limit #{start}, #{size} ;
+ 	</select>
+ 	<select id="total" resultType="int">
+ 		select count(*)
+ 		from event
+ 		<if test="key=='event_writer'">where event_writer like #{word}</if>
+		<if test="key=='event_title'">where event_title like #{word}</if>
+		<if test="key=='event_contents'">where event_contents like #{word}</if>
+ 	</select>
+ 	<update id="updateViewcnt">
+		update event
+		set event_vcnt=event_vcnt+1
+		where event_key=#{event_key}
+	</update>
+</mapper>

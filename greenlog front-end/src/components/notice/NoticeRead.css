@@ -1,0 +1,76 @@
+.notice-read-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+  }
+  
+  .notice-header {
+    margin-bottom: 20px;
+  }
+  
+  .notice-header h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .notice-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #888;
+  }
+  
+  .divider {
+    margin: 20px 0;
+    border: none;
+    border-top: 2px solid #000; /* 구분선을 더 진하게 설정 */
+  }
+  
+  .notice-content {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  
+  .notice-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .notice-actions .btn {
+    margin-left: 10px;
+    padding: 5px 20px;
+    border: none;
+    background-color: #040505;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none; /* 링크의 기본 밑줄 제거 */
+  }
+  
+  .notice-actions .btn:hover {
+    background-color: #1c1e1e;
+  }
+  
+  .notice-navigation {
+    display: flex;
+    justify-content: flex-start; /* 왼쪽 정렬 */
+    margin-top: 20px;
+  }
+  
+  .notice-navigation .btn {
+    padding: 5px 20px;
+    border: none;
+    background-color: #050605;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none; /* 링크의 기본 밑줄 제거 */
+  }
+  
+  .notice-navigation .btn:hover {
+    background-color: #070908;
+  }
+  

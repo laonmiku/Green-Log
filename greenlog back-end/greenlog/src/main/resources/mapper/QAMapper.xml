@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.QAMapper">
+	 <insert id="insert">
+        INSERT INTO QA (qa_writer, qa_title, qa_contents,qa_lock,comments,qa_state)
+        VALUES (#{qa_writer}, #{qa_title}, #{qa_contents},#{qa_lock},#{comments},#{qa_state})
+    </insert>
+     <update id="update">
+		update QA
+		set qa_title= #{qa_title}, qa_contents=#{qa_contents},qa_lock=#{qa_lock},comments=#{comments}, qa_state=#{qa_state}
+		where qa_key=#{qa_key}
+	</update>
+	 <delete id="delete">
+		delete from QA where qa_key=#{qa_key}
+	</delete>
+	 <select id="read" resultType="com.example.domain.QaVO">
+        SELECT * FROM QA WHERE qa_key = #{qa_key}
+    </select>
+		<select id="list" resultType="hashmap">
+ 		select * , date_format(qa_regDate, '%Y.%m.%d') as fmtdate
+		from QA
+		<if test="key=='qa_writer'">where qa_writer like #{word}</if>
+		<if test="key=='qa_title'">where qa_title like #{word}</if>
+		<if test="key=='qa_contents'">where qa_contents like #{word}</if>
+		order by qa_key desc
+		limit #{start}, #{size} ;
+ 	</select>
+ 	<select id="total" resultType="int">
+ 		select count(*)
+ 		from QA
+ 		<if test="key=='qa_writer'">where qa_writer like #{word}</if>
+		<if test="key=='qa_title'">where qa_title like #{word}</if>
+		<if test="key=='qa_contents'">where qa_contents like #{word}</if>
+ 	</select>
+ 	<update id="updateViewcnt">
+		update QA
+		set qa_vcnt=qa_vcnt+1
+		where qa_key=#{qa_key}
+	</update>
+	<select id="qaListCount" resultType="int">
+		select count(*) from QA 
+		where comments is null
+	</select>
+	<select id="qaList" resultType="hashmap">
+		select * from QA 
+		<if test="key=='qa_writer'">where comments is null and qa_writer like #{word}</if>
+		<if test="key=='qa_title'">where comments is null and qa_title like #{word}</if>
+		<if test="key=='qa_contents'">where comments is null and qa_contents like #{word}</if>
+		order by qa_key desc
+		limit #{start}, #{size} ;
+	</select>
+	<select id="qaListTotal" resultType="int">
+		select count(*) from QA 
+		<if test="key=='qa_writer'">where comments is null and qa_writer like #{word}</if>
+		<if test="key=='qa_title'">where comments is null and qa_title like #{word}</if>
+		<if test="key=='qa_contents'">where comments is null and qa_contents like #{word}</if>
+	</select>
+</mapper>

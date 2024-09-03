@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.AuctionMapper">
+	<insert id="insert">
+		insert into auction (auction_seller , auction_buyer,
+		auction_amount , auction_mall_key)
+		value
+		(#{auction_seller},#{auction_buyer},#{auction_amount},
+		#{auction_mall_key})
+	</insert>
+
+	<select id="userAList" resultType="hashmap">
+		select *, date_format(auction_regDate,'%Y-%m-%d %T') as fmtdate
+		from
+		auction join mall on auction_mall_key=mall_key
+		where (auction_seller = #{uid} or auction_buyer = #{uid}) and
+		auction_state=0
+		<if test="key == 'null'">
+			and (auction_seller like concat('%', #{word}, '%') or auction_buyer like
+			concat('%', #{word}, '%'))
+		</if>
+		<if test="key == 'auction_seller'">
+			and auction_seller = #{uid}
+			and auction_seller like concat('%', #{word}, '%')
+		</if>
+		<if test="key == 'auction_buyer'">
+			and auction_buyer= #{uid}
+			and auction_seller like concat('%', #{word}, '%')
+		</if>
+		<if test="key == 'auction_regDate'">
+			and #{date2}>auction_regDate and auction_regDate>#{date1}
+		</if>
+		order by auction_regDate desc limit #{start}, #{size}
+	</select>
+
+	<update id="stateUpdate1">
+		update auction set auction_state=1 where
+		auction_key=#{auction_key};
+	</update>
+	
+		<update id="stateUpdate0">
+		update auction set auction_state=0 where
+		auction_key=#{auction_key};
+	</update>
+
+	<select id="total" resultType="int">
+		select count(*) from auction where
+		(auction_seller=#{uid} or
+		auction_buyer=#{uid}) and auction_state=0
+		<if test="key == 'null'">
+			and (auction_seller like concat('%', #{word}, '%') or auction_buyer like
+			concat('%', #{word}, '%'))
+		</if>
+		<if test="key == 'auction_seller'">
+			and auction_seller = #{uid}
+			and auction_seller like concat('%', #{word}, '%')
+		</if>
+		<if test="key == 'auction_buyer'">
+			and auction_buyer= #{uid}
+			and auction_seller like concat('%', #{word}, '%')
+		</if>
+		<if test="key == 'auction_regDate'">
+			and #{date2}>auction_regDate and auction_regDate>#{date1}
+		</if>
+	</select>
+
+	<select id="adminAList" resultType="hashmap">
+		select *, date_format(auction_regDate,'%Y.%m.%d %T') as fmtdate from
+		auction, mall
+		where mall_key = auction_mall_key and
+		<if test="key == 'auction_seller'">
+			auction_seller like concat('%', #{word}, '%')
+		</if>
+		<if test="key == 'auction_buyer'">
+			auction_buyer like concat('%', #{word}, '%')
+		</if>
+		<if test="key == 'auction_regDate'">
+			#{date2}>auction_regDate and auction_regDate>#{date1}
+		</if>
+		<if test="key == 'auction_state'">
+			auction_state=1
+		</if>
+		order by auction_regDate desc
+		limit #{start}, #{size}
+	</select>
+
+	<select id="admintotal" resultType="int">
+		select count(*) from auction
+		<if test="key == 'auction_seller'">
+			where auction_seller like concat('%', #{word}, '%')
+		</if>
+		<if test="key == 'auction_buyer'">
+			where auction_buyer like concat('%', #{word}, '%')
+		</if>
+		<if test="key == 'auction_regDate'">
+			where #{date2}>auction_regDate and auction_regDate>#{date1}
+		</if>
+		<if test="key == 'auction_state'">
+			where auction_state=1
+		</if>
+	</select>
+</mapper>

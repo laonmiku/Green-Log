@@ -1,0 +1,44 @@
+/* FAQList.css */
+.toggle-button-group {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.toggle-button {
+  flex: 1;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px 20px;
+  border-radius: 5px; 
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s;
+}
+
+.toggle-button:not(.active):hover {
+  background-color: #000;
+  color: white;
+}
+
+.toggle-button.active {
+  background-color: #000;
+  color: white;
+  cursor: default;
+}
+
+.toggle-button.active:hover {
+  background-color: #000;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.search-field {
+  flex: 1;
+  max-width: 800px;
+  width: 100%;
+}

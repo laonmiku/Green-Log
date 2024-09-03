@@ -1,0 +1,65 @@
+.notice-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 auto; /* 테이블을 가운데 정렬 */
+}
+
+.notice-table th, .notice-table td {
+  padding: 10px;
+  text-align: left;
+}
+
+.notice-table th {
+  border-bottom: 2px solid black; 
+}
+
+.notice-table th:first-child, .notice-table td:first-child {
+  width: 10%;
+}
+
+.notice-table th:nth-child(2), .notice-table td:nth-child(2) {
+  width: 15%;
+}
+
+.notice-table th:nth-child(3), .notice-table td:nth-child(3) {
+  width: 30%;
+}
+
+.notice-table th:nth-child(4), .notice-table td:nth-child(4) {
+  width: 15%;
+}
+
+.notice-table th:nth-child(5), .notice-table td:nth-child(5) {
+  width: 15%;
+}
+
+.title-cell {
+  max-width: 600px;
+}
+
+.notice-link {
+  text-decoration: none;
+  color: black;
+}
+
+.notice-link:hover {
+  text-decoration: none; /* 호버 시에도 밑줄 없애기 */
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  width: 300px;
+}
+
+.category-select .MuiSelect-outlined {
+  border: none;
+  padding: 0;
+}
+
+.category-select .MuiOutlinedInput-notchedOutline {
+  border: none;
+}

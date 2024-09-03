@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.DiaryMapper">
+	<insert id="insert">
+		insert into diary(diary_writer, diary_contents, diary_title, diary_state)
+		values (#{diary_writer}, #{diary_contents}, #{diary_title}, #{diary_state})
+	</insert>
+	<select id="read" resultType="hashmap">
+		select *, date_format(diary_regDate,'%Y년%m월%d일 %T') as fmtDdate, 
+		date_format(diary_uDate,'%Y년%m월%d일 %T') as fmtUdate,
+		(select count(*) from diaryLike f where user_uid=#{user_uid} and f.diary_key=d.diary_key) ucnt, 
+		(select count(*) from diaryLike f where f.diary_key=d.diary_key) fcnt   
+		from diary d where d.diary_key=#{diary_key}
+	</select>
+	<update id="update">
+		update diary set diary_contents=#{diary_contents}, diary_title=#{diary_title}, diary_state=#{diary_state}, diary_uDate=now() 
+		where diary_key=#{diary_key}
+	</update>
+	
+	<select id="personList" resultType="hashmap">
+		select d.*, user_img, date_format(diary_regDate,'%Y년%m월%d일 %T') as fmtDdate, 
+		date_format(diary_uDate,'%Y년%m월%d일 %T') as fmtUdate,
+		(select count(*) from diaryLike f where user_uid=#{user_uid} and f.diary_key=d.diary_key) ucnt, 
+		(select count(*) from diaryLike f where f.diary_key=d.diary_key) fcnt   
+		from diary d, user u
+		where diary_writer= user_uid and diary_writer=#{diary_writer}
+		order by diary_regDate desc  
+        limit #{start}, #{size}	
+	</select>
+	
+	<select id="personTotal" resultType="int">
+		select count(*) from diary where diary_writer=#{diary_writer}
+	</select>
+	<select id="adminList" resultType="hashmap">
+		select * from diary order by diary_regDate desc
+	</select>
+	
+	<delete id="delete">
+		delete from diary where diary_key=#{diary_key}
+	</delete>
+	
+	<insert id="likePress">
+		insert into diaryLike(diary_key, user_uid) values (#{diary_key}, #{user_uid})
+	</insert>
+	
+	<delete id="likeCancel">
+		delete from diaryLike where diary_key=#{diary_key} and user_uid=#{user_uid}
+	</delete>
+	
+	<insert id="photoInsert">
+		insert into diaryPhoto(diaryPhoto_diary_key, diaryPhoto_filename, diaryPhoto_sequence) 
+		values (#{diaryPhoto_diary_key}, #{diaryPhoto_filename}, #{diaryPhoto_sequence})
+	</insert>
+	<delete id="photoDelete">
+		delete from diaryPhoto where diaryPhoto_key= #{diaryPhto_key}
+	</delete>
+	
+	<select id="lastKey" resultType="int">
+		select distinct(last_insert_id()) as last from diary;
+	</select>
+	
+	<update id="thumbnail">
+		update diary set diary_thumbnail=#{diary_thumbnail} where diary_key = #{diary_key};
+	</update>
+	
+	<select id="photoSelect" resultType="hashmap">
+		select * from diaryPhoto where diaryPhoto_diary_key = #{diaryPhoto_diary_key} order by diaryPhoto_sequence asc;
+	</select>
+	
+	<select id="thumbnailSelect" resultType="string">
+		select diary_thumbnail from diary where diary_key=#{diary_key}
+	</select>
+	
+	<update id="updateThumbnail">
+		update diary set diary_thumbnail=#{diaryPhoto_filename} where diary_key = #{diaryPhoto_diary_key};
+	</update>
+	
+	<update id="updatePhoto">
+		update diaryPhoto set diaryPhoto_sequence=#{diaryPhoto_sequence} where diaryPhoto_key=#{diaryPhoto_key}
+	</update>
+	
+		<select id="DiaryTopList" resultType="hashmap">
+		  select *, 
+		    date_format(diary_regDate,'%Y년%m월%d일 %T') as fmtDdate, 
+		    date_format(diary_uDate,'%Y년%m월%d일 %T') as fmtUdate,
+		    (select count(*) from diaryLike f where user_uid=#{user_uid} and f.diary_key=d.diary_key) ucnt, 
+		    (select count(*) from diaryLike f where f.diary_key=d.diary_key) fcnt
+		  from diary d 
+		  where d.diary_writer=#{diary_writer} 
+		  order by fcnt desc, diary_regDate desc
+		  limit 0, 5;
+		</select>
+
+   
+   	<select id="DiaryTotal" resultType="int">
+		select count(*) from diary where diary_writer=#{diary_writer}
+	</select>
+	
+</mapper>

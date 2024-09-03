@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.SeedMapper">
+
+	<select id="list" resultType="hashmap">
+	    select s.*, u.user_nickname, u.user_img,u.user_uname 
+	    from seed s
+	    join user u on s.seed_uid = u.user_uid 
+	    <where>
+	        <if test="key == 'id'">
+	            (seed_point > -1 and (user_uid like concat('%', #{word}, '%') or user_nickname like concat('%', #{word}, '%')))
+	        </if>
+	    </where>
+	    order by s.seed_key desc
+	    limit #{start}, #{size}
+	</select>
+	
+	<select id="listCount" resultType="int">
+		select count(*) from seed s
+		join user u on s.seed_uid= u.user_uid 
+		<where>
+	        <if test="key == 'id'">
+	            (seed_point > -1 and (user_uid like concat('%', #{word}, '%') or user_nickname like concat('%', #{word}, '%')))
+	        </if>
+	    </where>
+	</select>
+	
+	<select id="read" resultType="com.example.domain.SeedVO">
+		select * from seed s, user u where s.seed_uid=u.user_uid and seed_uid=#{seed_uid}
+	</select>
+	
+	<insert id="insert">
+		insert into seed (seed_uid,seed_number) value( #{seed_uid},  CONCAT('seed', SUBSTRING(REPLACE(UUID(), '-', ''), 1, 8)) );
+	</insert>
+	
+	<update id="update">
+		update seed set seed_point=(seed_point+ #{amount}*#{trade_state} ) where seed_number= #{trade_to}
+	</update>
+	
+
+</mapper>

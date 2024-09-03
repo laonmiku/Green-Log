@@ -1,0 +1,78 @@
+.insert-page-container {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.insert-form {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.form-image {
+    flex: 0 0 auto;
+    /* 이미지 크기를 고정 */
+}
+
+.review-image {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.form-fields {
+    flex: 1;
+    /* 남은 공간을 차지 */
+}
+
+.rating-container {
+    margin-bottom: 15px;
+}
+
+.rating-label {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.form-control-textarea {
+    resize: none;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.text-end {
+    text-align: right;
+}
+
+.button {
+    border-radius: 4px;
+}
+
+.button-submit {
+    background-color: #28a745;
+    color: white;
+}
+
+.button-submit:hover {
+    background-color: #218838;
+}
+
+.button-cancel {
+    background-color: #dc3545;
+    color: white;
+}
+
+.button-cancel:hover {
+    background-color: #c82333;
+}

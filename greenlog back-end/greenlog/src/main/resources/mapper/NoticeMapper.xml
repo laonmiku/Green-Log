@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mapper.NoticeMapper">
+    <insert id="insert">
+        INSERT INTO notice (notice_writer, notice_title, notice_contents, notice_type)
+        VALUES (#{notice_writer}, #{notice_title}, #{notice_contents}, #{notice_type})
+    </insert>
+   <update id="update">
+		update notice
+		set notice_title= #{notice_title}, notice_contents=#{notice_contents}, notice_type= #{notice_type}
+		where notice_key=#{notice_key}
+	</update>
+   <delete id="delete">
+		delete from notice where notice_key=#{notice_key}
+	</delete>
+    <select id="read" resultType="com.example.domain.NoticeVO">
+        SELECT * FROM notice WHERE notice_key = #{notice_key}
+    </select>
+ 	  <select id="list" resultType="hashmap">
+        select *, date_format(notice_regDate, '%Y.%m.%d') as fmtdate
+        from notice
+         <where>
+            <if test="key == 'all'">notice_title LIKE #{word}</if>
+            <if test="key == 'normal'">notice_title LIKE #{word} AND notice_type = 1</if>
+            <if test="key == 'member'">notice_title LIKE #{word} AND notice_type = 2 </if>
+            <if test="key == 'point'">notice_title LIKE #{word} AND notice_type = 3 </if>
+            <if test="key == 'etc'">notice_title LIKE #{word} AND notice_type = 4 </if>
+        </where>
+        order by notice_key desc
+        limit #{start}, #{size}
+    </select>
+ <select id="total" resultType="int">
+        select count(*)
+        from notice
+       <where>
+            <if test="key == 'all'">notice_title LIKE #{word}</if>
+            <if test="key == 'normal'">notice_title LIKE #{word} AND notice_type = 1</if>
+            <if test="key == 'member'">notice_title LIKE #{word} AND notice_type = 2 </if>
+            <if test="key == 'point'">notice_title LIKE #{word} AND notice_type = 3 </if>
+             <if test="key == 'etc'">notice_title LIKE #{word} AND notice_type = 4 </if>
+        </where>
+    </select>
+    <update id="updateViewcnt">
+		update notice
+		set notice_vcnt=notice_vcnt+1
+		where notice_key=#{notice_key}
+	</update>
+</mapper>

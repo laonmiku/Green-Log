@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.UserMapper">
+   <update id="updatePass">
+      update user set user_upass=#{user_upass} where user_uid=#{user_uid}
+   </update>
+
+   <select id="findpass" resultType="com.example.domain.UserVO">
+      select * from user where user_uname=#{user_uname} and user_phone=#{user_phone} and user_email=#{user_email} and user_uid=#{user_uid}
+   </select>
+
+   <select id="findid" resultType="com.example.domain.UserVO">
+      select * from user where user_uname=#{user_uname} and user_phone=#{user_phone} and user_email=#{user_email}
+   </select>
+
+   <delete id="delete">
+      delete from user where user_key=#{user_key};
+   </delete>
+  
+	<select id="adminList" resultType="hashmap">
+		select *, date_format(user_birth,'%Y년 %m월 %d일') as fmtDdate 
+		from user
+		<if test="key=='user_uid'"> where user_uid like concat('%', #{word}, '%')</if>
+		<if test="key=='user_uname'">where user_uname like concat('%', #{word}, '%')</if>
+		<if test="key=='user_nickname'">where user_nickname like concat('%', #{word}, '%')</if>
+		<if test="key=='user_birth'">where user_birth like concat('%', #{word}, '%')</if>
+		order by user_regDate desc
+		limit #{start}, #{size} ;
+	</select>
+	
+	<select id="adminListTotal" resultType="int">
+		select count(*) from user
+		<if test="key=='user_uid'"> where user_uid like concat('%', #{word}, '%')</if>
+		<if test="key=='user_uname'">where user_uname like concat('%', #{word}, '%')</if>
+		<if test="key=='user_nickname'">where user_nickname like concat('%', #{word}, '%')</if>
+		<if test="key=='user_birth'">where user_birth like concat('%', #{word}, '%')</if>
+	</select>
+	
+	<insert id="insert" >
+		insert into user( user_uid, user_upass, user_uname, user_nickname, user_email, user_phone, user_gender, user_address1, user_address2, user_auth,user_birth )
+		value (#{user_uid},#{user_upass},#{user_uname},#{user_nickname},#{user_email},#{user_phone},#{user_gender},#{user_address1},#{user_address2}, '일반회원',  
+		DATE_ADD(
+            CONVERT_TZ(
+                STR_TO_DATE(
+                    REPLACE(REPLACE(#{user_birth}, 'T', ' '), 'Z', ''),
+                    '%Y-%m-%d %H:%i:%s'
+                ),
+                '+00:00',
+                'Asia/Seoul'
+            ),
+            INTERVAL 15 HOUR
+        )
+		)
+	</insert>
+	
+	<select id="read" resultType="com.example.domain.UserVO">
+		select * from user where user_uid=#{uid}
+	</select>
+	
+	<update id="adminUpdate">
+		update user set user_nickname=#{user_nickname}, user_birth=#{user_birth}, user_gender=#{user_gender}, user_phone=#{user_phone}, user_email=#{user_email},
+		user_address1=#{user_address1}, user_address2=#{user_address2}, user_auth=#{user_auth} where user_uid=#{user_uid}
+	</update>
+	<update id="personUpdate">
+		update user set user_uname=#{user_uname}, user_phone=#{user_phone}, user_address1=#{user_address1}, user_address2=#{user_address2}, user_birth=#{user_birth},
+		user_nickname=#{user_nickname}, user_email=#{user_email}, user_ment=#{user_ment} where user_uid=#{user_uid}
+	</update>
+	<update id="imgUpdate">
+		update user set user_img=#{user_img} where user_uid=#{user_uid}
+	</update>
+	
+	<select id="mypage2" resultType="hashmap">
+      select *, date_format(diary_regDate,'%Y년%m월%d일 %T') as fmtDdate, 
+      date_format(diary_uDate,'%Y년%m월%d일 %T') as fmtUdate,
+      (select count(*) from diaryLike f where user_uid=#{user_uid} and f.diary_key=d.diary_key) ucnt, 
+      (select count(*) from diaryLike f where f.diary_key=d.diary_key) fcnt
+      from diary d where d.diary_writer=#{diary_writer}
+   </select>
+	
+	<select id="mypage" resultType="hashmap">
+    select
+    	u.user_ment, 
+        u.user_uid, 
+        u.user_nickname, 
+        u.user_img, 
+        u.user_auth, 
+        s.seed_point,
+        coalesce(a.auction_count, 0) as auction_count,
+        coalesce(f.following_count, 0) as following_count,
+        coalesce(f.follower_count, 0) as follower_count
+    from user u
+    left join 
+        seed s on u.user_uid = s.seed_uid
+     left join 
+        (select 
+            count(*) as auction_count
+         from 
+            auction
+         where 
+            auction_buyer = #{uid} or auction_seller = #{uid}) a 
+    on u.user_uid = #{uid}
+    left join 
+        (select 
+            (select count(*) from follow where follow_from = #{uid}) as following_count,
+            (select count(*) from follow where follow_to = #{uid}) as follower_count) f on u.user_uid = #{uid}
+    where u.user_uid = #{uid};
+	</select>
+	
+	<select id="followingDiaryList" resultType="hashmap">
+		select d.*, date_format(diary_regDate,'%m.%d') as fmtDdate, 
+		date_format(diary_uDate,'%m.%d') as fmtUdate,
+		(select count(*) from diaryLike f where user_uid=#{uid} and f.diary_key=d.diary_key) ucnt, 
+		(select count(*) from diaryLike f where f.diary_key=d.diary_key) fcnt,
+		u.user_img
+		from diary d
+		JOIN user u ON d.diary_writer = u.user_uid
+		where diary_writer in ( select follow_to from follow where follow_from = #{uid})
+		order by diary_regDate desc  
+        limit #{start}, #{size}	
+	</select>
+	
+	<select id="AdminDiaryList" resultType="hashmap">
+		select d.*, date_format(diary_regDate,'%m.%d') as fmtDdate, 
+		date_format(diary_uDate,'%m.%d') as fmtUdate,
+		(select count(*) from diaryLike f where user_uid=#{uid} and f.diary_key=d.diary_key) ucnt, 
+		(select count(*) from diaryLike f where f.diary_key=d.diary_key) fcnt,
+		u.user_img
+		from diary d
+		JOIN user u ON d.diary_writer = u.user_uid
+		order by diary_regDate desc 
+		limit #{start}, #{size}	
+	</select>
+	
+	<select id="chknickname" resultType="hashmap">
+		select * from user where user_nickname=#{user_nickname}
+	</select>
+</mapper>

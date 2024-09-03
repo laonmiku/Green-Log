@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mapper.FAQMapper">
+    <insert id="insert">
+        INSERT INTO FAQ (faq_writer, faq_question, faq_answer,faq_type)
+        VALUES (#{faq_writer}, #{faq_question}, #{faq_answer},#{faq_type})
+    </insert>
+   <update id="update">
+		update FAQ
+		set faq_question=#{faq_question}, faq_answer= #{faq_answer},faq_type=#{faq_type}
+		where faq_key=#{faq_key}
+	</update>
+   <delete id="delete">
+		delete from FAQ where faq_key=#{faq_key}
+	</delete>
+    <select id="read" resultType="com.example.domain.FAQVO">
+        SELECT * FROM FAQ WHERE faq_key = #{faq_key}
+    </select>
+<select id="list" resultType="hashmap">
+    select *
+    from FAQ
+    	<where>
+            <if test="key == 'all' and word != null and word != ''">faq_question LIKE #{word}</if>
+            <if test="key == 'member' and word != null and word != ''">faq_question LIKE #{word} AND faq_type =0</if>
+            <if test="key == 'point' and word != null and word != ''">faq_question LIKE #{word} AND faq_type =2</if>
+            <if test="key == 'diary' and word != null and word != ''">faq_question LIKE #{word} AND faq_type =3</if>
+             <if test="key == 'mall' and word != null and word != ''">faq_question LIKE #{word} AND faq_type =4</if>
+        </where>
+    order by faq_key desc
+    limit #{start}, #{size}
+</select>
+
+<select id="total" resultType="int">
+  select count(*)
+  from FAQ
+  <where>
+    <if test="key == 'all' and word != null and word != ''">faq_question LIKE #{word}</if>
+    <if test="key == 'member' and word != null and word != ''">faq_question LIKE #{word} AND faq_type =0</if>
+    <if test="key == 'point' and word != null and word != ''">faq_question LIKE #{word} AND faq_type =2</if>
+    <if test="key == 'diary' and word != null and word != ''">faq_question LIKE #{word} AND faq_type =3</if>
+     <if test="key == 'mall' and word != null and word != ''">faq_question LIKE #{word} AND faq_type =4</if>
+  </where>
+</select>
+
+    <update id="updateViewcnt">
+		update FAQ
+		set faq_vcnt=faq_vcnt+1
+		where faq_key=#{faq_key}
+	</update>
+</mapper>
